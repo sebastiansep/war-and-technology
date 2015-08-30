@@ -1,7 +1,7 @@
 version: 0.6
 data_loading: TRUE
 cache_loading: TRUE
-recursive_loading: FALSE
+recursive_loading: TRUE
 munging: TRUE
 logging: FALSE
 load_libraries: FALSE
