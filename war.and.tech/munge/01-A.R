@@ -6,6 +6,7 @@ library(sep)
 library(dplyr)
 library(countrycode)
 library(DataCombine)
+library(scales)
 
 
 #Normalise military power scale
@@ -63,7 +64,7 @@ wars$superior.win[pos] = "Superior Force Lost"
 pos = wars$superior.win == "Released"
 wars$superior.win[pos] = "Compromise"
 wars$advantage = findInterval(wars$power.balance, seq(0,1, by = 0.25), all.inside = T)
-mil.diffs = c("Minimal Military Superiority For Either Side", "Minor Military Superiority on One Side", "Large Military Superiority on One Side", "Dominant Military Superiority on One Side")
+mil.diffs = c("Minimal Military Superiority For Either Side", "Minor Military Superiority on One Side", "Large Military Superiority on One Side", "Military Super Power Involved")
 wars$advantage = mil.diffs[wars$advantage]
 wars = wars %>% group_by(advantage) %>% mutate(n.advantage = n())
 wars$advantage = paste(wars$advantage, " (n = ", wars$n.advantage, ")", sep = "")
@@ -91,7 +92,8 @@ pos = wars$Fatality == -9
 wars$deaths[pos] = "Unknown"
 wars$deaths = factor(wars$deaths, levels = c( deaths), ordered=T)#factor(wars$deaths, levels = c("Unknown", deaths), ordered=T)
 wars$annual.deaths = wars$approx.deaths/wars$duration
-
+wars$aggregate.deaths = ifelse(wars$approx.deaths<500, "Less than 500", "Greater than 500")
+wars$aggregate.deaths = factor(wars$aggregate.deaths, levels = c("Less than 500", "Greater than 500"), ordered=T)
 #decade
 wars$decade = findInterval(wars$StYear, seq(1810, max(wars$StYear), by = 10), all.inside=T)
 wars$decade = plyr::round_any(wars$StYear, accuracy=10, f = ceiling)
